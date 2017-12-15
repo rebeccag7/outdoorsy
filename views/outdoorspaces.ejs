@@ -1,3 +1,5 @@
+<% include partials/header %>
+
 <h1>This is the outdoor spaces page!</h1>
 
 <% outdoorspaces.forEach(function(outdoorspace){ %>
@@ -6,4 +8,6 @@
 		<img src="<%= outdoorspace.image %>">
 	</div>
 <% }); %>
+
+<% include partials/footer %>
 
