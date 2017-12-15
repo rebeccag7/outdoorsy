@@ -1,0 +1,13 @@
+<% include partials/header %>
+
+<h1>Create a new outdoor space</h1>
+
+<form action="/outdoorspaces" method="POST">
+	<input type="text" name="name" placeholder="name">
+	<input type="text" name="image" placeholder="image url">
+	<button>Submit</button>
+</form>
+
+<a href="/outdoorspaces">Go Back</a>
+
+<% include partials/footer %>
