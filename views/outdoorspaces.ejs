@@ -1,0 +1,9 @@
+<h1>This is the outdoor spaces page!</h1>
+
+<% outdoorspaces.forEach(function(outdoorspace){ %>
+	<div>
+		<h4><%= outdoorspace.name %></h4>
+		<img src="<%= outdoorspace.image %>">
+	</div>
+<% }); %>
+
