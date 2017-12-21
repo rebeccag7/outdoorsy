@@ -16,7 +16,7 @@ var outdoorspaceSchema = new mongoose.Schema({
 var Outdoorspace = mongoose.model("Outdoorspace", outdoorspaceSchema);
 
 
-Outdoorspace.create(
+/*Outdoorspace.create(
     {
         name: "Rock Milton Park", 
         image: "https://farm5.staticflickr.com/4585/37643820335_408da9b83e.jpg",
@@ -29,6 +29,7 @@ Outdoorspace.create(
             console.log(outdoorspace);
         }
     });
+*/
 
 app.get("/", function(req, res){
 	res.render("landing");
@@ -39,7 +40,7 @@ app.get("/outdoorspaces", function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
-			res.render("outdoorspaces", {outdoorspaces: allOutdoorspaces});
+			res.render("index", {outdoorspaces: allOutdoorspaces});
 		}
 	});
 });
@@ -47,7 +48,8 @@ app.get("/outdoorspaces", function(req, res) {
 app.post("/outdoorspaces", function(req, res) {
 	var name = req.body.name;
 	var image = req.body.image;
-	var newOutdoorspace = {name: name, image: image};
+	var desc = req.body.description;
+	var newOutdoorspace = {name: name, image: image, description: desc};
 	Outdoorspace.create(newOutdoorspace, function(err, newlyCreated) {
 		if(err) {
 			console.log(err);
@@ -62,7 +64,13 @@ app.get("/outdoorspaces/new", function(req, res) {
 })
 
 app.get("/outdoorspaces/:id", function(req, res) {
-	res.render("show");
+	Outdoorspace.findById(req.params.id, function(err, foundOutdoorspace) {
+		if(err) {
+			console.log(err);
+		} else {
+			res.render("show", {outdoorspace: foundOutdoorspace});
+		}
+	});
 });
 
 app.listen(3000, () => console.log('The Outdoorsy server has started!'));
