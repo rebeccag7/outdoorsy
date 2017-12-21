@@ -9,16 +9,18 @@ app.set("view engine", "ejs");
 
 var outdoorspaceSchema = new mongoose.Schema({
 	name: String,
-	image: String
+	image: String,
+	description: String
 });
 
 var Outdoorspace = mongoose.model("Outdoorspace", outdoorspaceSchema);
 
-/*
+
 Outdoorspace.create(
     {
         name: "Rock Milton Park", 
-        image: "https://farm5.staticflickr.com/4585/37643820335_408da9b83e.jpg"
+        image: "https://farm5.staticflickr.com/4585/37643820335_408da9b83e.jpg",
+        description: "This places is so beautiful, rocks of all shapes and sizes will 'rock' your time here!"
     }, function(err, outdoorspace) {
         if(err){
             console.log(err);
@@ -27,7 +29,7 @@ Outdoorspace.create(
             console.log(outdoorspace);
         }
     });
-*/
+
 app.get("/", function(req, res){
 	res.render("landing");
 })
@@ -58,5 +60,9 @@ app.post("/outdoorspaces", function(req, res) {
 app.get("/outdoorspaces/new", function(req, res) {
 	res.render("new.ejs");
 })
+
+app.get("/outdoorspaces/:id", function(req, res) {
+	res.render("show");
+});
 
 app.listen(3000, () => console.log('The Outdoorsy server has started!'));
