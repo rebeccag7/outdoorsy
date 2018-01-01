@@ -1,19 +1,14 @@
 var express    = require("express"),
     app        = express(),
     bodyParser = require("body-parser"),
-    mongoose   = require("mongoose");
+    mongoose   = require("mongoose"),
+    Outdoorspace = require("./models/outdoorspace");
 
 mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-var outdoorspaceSchema = new mongoose.Schema({
-	name: String,
-	image: String,
-	description: String
-});
 
-var Outdoorspace = mongoose.model("Outdoorspace", outdoorspaceSchema);
 
 
 /*Outdoorspace.create(
