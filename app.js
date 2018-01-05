@@ -1,21 +1,20 @@
-var express    = require("express"),
-    app        = express(),
-    bodyParser = require("body-parser"),
-    mongoose   = require("mongoose"),
+var express      = require("express"),
+    app          = express(),
+    bodyParser   = require("body-parser"),
+    mongoose     = require("mongoose"),
     Outdoorspace = require("./models/outdoorspace");
+    seedDB       = require("./seeds");
 
+seedDB();
 mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
-
-
 
 /*Outdoorspace.create(
     {
         name: "Rock Milton Park", 
         image: "https://farm5.staticflickr.com/4585/37643820335_408da9b83e.jpg",
-        description: "This places is so beautiful, rocks of all shapes and sizes will 'rock' your time here!"
+        description: "This place is so beautiful, rocks of all shapes and sizes will 'rock' your time here!"
     }, function(err, outdoorspace) {
         if(err){
             console.log(err);
