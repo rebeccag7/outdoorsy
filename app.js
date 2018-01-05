@@ -5,10 +5,10 @@ var express      = require("express"),
     Outdoorspace = require("./models/outdoorspace");
     seedDB       = require("./seeds");
 
-seedDB();
 mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+seedDB();
 
 /*Outdoorspace.create(
     {
@@ -58,7 +58,7 @@ app.get("/outdoorspaces/new", function(req, res) {
 })
 
 app.get("/outdoorspaces/:id", function(req, res) {
-	Outdoorspace.findById(req.params.id, function(err, foundOutdoorspace) {
+	Outdoorspace.findById(req.params.id).populate("comments").exec(function(err, foundOutdoorspace) {
 		if(err) {
 			console.log(err);
 		} else {

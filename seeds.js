@@ -1,5 +1,6 @@
-var mongoose = require("mongoose");
+var mongoose     = require("mongoose");
 var Outdoorspace = require("./models/outdoorspace");
+var Comment      = require("./models/comment");
 
 var data = [
 	{
@@ -33,11 +34,24 @@ function seedDB() {
 		console.log("removed outdoor spaces!");
 		// Add a few outdoorspaces
     	data.forEach(function(seed) {
-	    	Outdoorspace.create(seed, function(err, data) {
+	    	Outdoorspace.create(seed, function(err, outdoorspace) {
 	    		if(err) {
 	    			console.log(err);
 	    		} else {
 	    			console.log("Added an outdoor space.");
+	    			Comment.create(
+	    				{
+	    					text: "This place is awesome.",
+	    					author: "Chanel"
+	    				}, function(err, comment) {
+	    					if(err) {
+	    						console.log(err);
+	    					} else {
+	    						outdoorspace.comments.push(comment);
+	    						outdoorspace.save();
+	    						console.log("Created a new outdoorspace");
+	    					}
+	    			});
 	    		}
 	    	});
     	});
