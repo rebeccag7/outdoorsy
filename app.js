@@ -34,7 +34,7 @@ app.get("/outdoorspaces", function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
-			res.render("index", {outdoorspaces: allOutdoorspaces});
+			res.render("outdoorspaces/index", {outdoorspaces: allOutdoorspaces});
 		}
 	});
 });
@@ -54,7 +54,7 @@ app.post("/outdoorspaces", function(req, res) {
 });
 
 app.get("/outdoorspaces/new", function(req, res) {
-	res.render("new.ejs");
+	res.render("outdoorspaces/new");
 })
 
 app.get("/outdoorspaces/:id", function(req, res) {
@@ -62,7 +62,22 @@ app.get("/outdoorspaces/:id", function(req, res) {
 		if(err) {
 			console.log(err);
 		} else {
-			res.render("show", {outdoorspace: foundOutdoorspace});
+			res.render("outdoorspaces/show", {outdoorspace: foundOutdoorspace});
+		}
+	});
+});
+
+// ==================
+// COMMENTS ROUTES
+// ==================
+
+app.get("/outdoorspaces/:id/comments/new", function(req, res) {
+	// find outdoorspace by id
+	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render("comments/new", {outdoorspace: outdoorspace});
 		}
 	});
 });
