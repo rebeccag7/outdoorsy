@@ -2,7 +2,8 @@ var express      = require("express"),
     app          = express(),
     bodyParser   = require("body-parser"),
     mongoose     = require("mongoose"),
-    Outdoorspace = require("./models/outdoorspace");
+    Outdoorspace = require("./models/outdoorspace"),
+    Comment      = require("./models/comment"),
     seedDB       = require("./seeds");
 
 mongoose.connect("mongodb://localhost/outdoor_spaces");
@@ -78,6 +79,29 @@ app.get("/outdoorspaces/:id/comments/new", function(req, res) {
 			console.log(err);
 		} else {
 			res.render("comments/new", {outdoorspace: outdoorspace});
+		}
+	});
+});
+
+app.post("/outdoorspaces/:id/comments", function(req, res) {
+	// lookup outdoor space using ID
+	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
+		if (err) {
+			console.log(err);
+			res.redirect("/outdoorspaces");
+		} else {
+			// create new comment
+			Comment.create(req.body.comment, function(err, comment) {
+				if(err) {
+					console.log(err);
+				} else {
+					// connect new comment to outdoor space
+					outdoorspace.comments.push(comment);
+					outdoorspace.save();
+					// redirect to outdoorspace show page
+					res.redirect("/outdoorspaces/" + outdoorspace._id);
+				}
+			});
 		}
 	});
 });
