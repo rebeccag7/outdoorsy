@@ -1,10 +1,13 @@
-var express      = require("express"),
-    app          = express(),
-    bodyParser   = require("body-parser"),
-    mongoose     = require("mongoose"),
-    Outdoorspace = require("./models/outdoorspace"),
-    Comment      = require("./models/comment"),
-    seedDB       = require("./seeds");
+var express       = require("express"),
+    app           = express(),
+    bodyParser    = require("body-parser"),
+    mongoose      = require("mongoose"),
+    passport      = require("passport"),
+    LocalStrategy = require("passport-local"),
+    Outdoorspace  = require("./models/outdoorspace"),
+    Comment       = require("./models/comment"),
+    User          = require("./models/user"),
+    seedDB        = require("./seeds");
 
 mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
