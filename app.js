@@ -15,6 +15,18 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 seedDB();
 
+// Passport Configuration
+app.use(require("express-session")({
+	secret: "This is a secret",
+	resave: false,
+	saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 /*Outdoorspace.create(
     {
         name: "Rock Milton Park", 
@@ -44,6 +56,7 @@ app.get("/outdoorspaces", function(req, res) {
 	});
 });
 
+// Create - add new outdoorspace to DB
 app.post("/outdoorspaces", function(req, res) {
 	var name = req.body.name;
 	var image = req.body.image;
@@ -58,6 +71,7 @@ app.post("/outdoorspaces", function(req, res) {
 	});
 });
 
+// New - show form to create new outdoor space
 app.get("/outdoorspaces/new", function(req, res) {
 	res.render("outdoorspaces/new");
 })
@@ -107,6 +121,29 @@ app.post("/outdoorspaces/:id/comments", function(req, res) {
 				}
 			});
 		}
+	});
+});
+
+// ============
+// Auth Routes
+// ============
+
+// Show register form
+app.get("/register", function(req, res) {
+	res.render("register");
+});
+
+// Handle Sign up logic
+app.post("/register", function(req, res) {
+	var newUser = new User({username: req.body.username});
+	User.register(newUser, req.body.password, function(err, user) {
+		if (err) {
+			console.log(err);
+			return res.render("register");
+		}
+		passport.authenticate("local")(req, res, function() {
+			res.redirect("/outdoorspaces");
+		});
 	});
 });
 
