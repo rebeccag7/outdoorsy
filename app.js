@@ -90,7 +90,7 @@ app.get("/outdoorspaces/:id", function(req, res) {
 // COMMENTS ROUTES
 // ==================
 
-app.get("/outdoorspaces/:id/comments/new", function(req, res) {
+app.get("/outdoorspaces/:id/comments/new", isLoggedIn, function(req, res) {
 	// find outdoorspace by id
 	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
 		if (err) {
@@ -101,7 +101,7 @@ app.get("/outdoorspaces/:id/comments/new", function(req, res) {
 	});
 });
 
-app.post("/outdoorspaces/:id/comments", function(req, res) {
+app.post("/outdoorspaces/:id/comments", isLoggedIn, function(req, res) {
 	// lookup outdoor space using ID
 	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
 		if (err) {
@@ -159,5 +159,18 @@ app.post("/login", passport.authenticate("local",
     	failureRedirect: "/login",
 	}), function(req, res) {
 });
+
+// Logout route
+app.get("/logout", function(req, res) {
+	req.logout();
+	res.redirect("/outdoorspaces");
+});
+
+function isLoggedIn(req, res, next) {
+	if(req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect("/login");
+}
 
 app.listen(3000, () => console.log('The Outdoorsy server has started!'));
