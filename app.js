@@ -27,6 +27,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req, res, next) {
+	res.locals.currentUser = req.user;
+	next();
+});
+
 /*Outdoorspace.create(
     {
         name: "Rock Milton Park", 
@@ -46,6 +51,7 @@ app.get("/", function(req, res){
 	res.render("landing");
 })
 
+// Index - show all outdoor spaces
 app.get("/outdoorspaces", function(req, res) {
 	Outdoorspace.find({}, function(err, allOutdoorspaces) {
 		if(err) {
@@ -56,7 +62,7 @@ app.get("/outdoorspaces", function(req, res) {
 	});
 });
 
-// Create - add new outdoorspace to DB
+// Create - add new outdoor space to DB
 app.post("/outdoorspaces", function(req, res) {
 	var name = req.body.name;
 	var image = req.body.image;
