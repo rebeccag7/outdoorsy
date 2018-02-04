@@ -9,6 +9,10 @@ var express       = require("express"),
     User          = require("./models/user"),
     seedDB        = require("./seeds");
 
+var commentRoutes      = require("./routes/comments"),
+    outdoorspaceRoutes = require("./routes/outdoorspaces"),
+    indexRoutes        = require("./routes/index")
+
 mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -32,6 +36,10 @@ app.use(function(req, res, next) {
 	next();
 });
 
+app.use("/", indexRoutes);
+app.use("/outdoorspaces", outdoorspaceRoutes);
+app.use("/outdoorspaces/:id/comments", commentRoutes);
+
 /*Outdoorspace.create(
     {
         name: "Rock Milton Park", 
@@ -46,137 +54,5 @@ app.use(function(req, res, next) {
         }
     });
 */
-
-app.get("/", function(req, res){
-	res.render("landing");
-})
-
-// Index - show all outdoor spaces
-app.get("/outdoorspaces", function(req, res) {
-	Outdoorspace.find({}, function(err, allOutdoorspaces) {
-		if(err) {
-			console.log(err);
-		} else {
-			res.render("outdoorspaces/index", {outdoorspaces: allOutdoorspaces});
-		}
-	});
-});
-
-// Create - add new outdoor space to DB
-app.post("/outdoorspaces", function(req, res) {
-	var name = req.body.name;
-	var image = req.body.image;
-	var desc = req.body.description;
-	var newOutdoorspace = {name: name, image: image, description: desc};
-	Outdoorspace.create(newOutdoorspace, function(err, newlyCreated) {
-		if(err) {
-			console.log(err);
-		} else {
-			res.redirect("/outdoorspaces");
-		}
-	});
-});
-
-// New - show form to create new outdoor space
-app.get("/outdoorspaces/new", function(req, res) {
-	res.render("outdoorspaces/new");
-})
-
-app.get("/outdoorspaces/:id", function(req, res) {
-	Outdoorspace.findById(req.params.id).populate("comments").exec(function(err, foundOutdoorspace) {
-		if(err) {
-			console.log(err);
-		} else {
-			res.render("outdoorspaces/show", {outdoorspace: foundOutdoorspace});
-		}
-	});
-});
-
-// ==================
-// COMMENTS ROUTES
-// ==================
-
-app.get("/outdoorspaces/:id/comments/new", isLoggedIn, function(req, res) {
-	// find outdoorspace by id
-	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.render("comments/new", {outdoorspace: outdoorspace});
-		}
-	});
-});
-
-app.post("/outdoorspaces/:id/comments", isLoggedIn, function(req, res) {
-	// lookup outdoor space using ID
-	Outdoorspace.findById(req.params.id, function(err, outdoorspace) {
-		if (err) {
-			console.log(err);
-			res.redirect("/outdoorspaces");
-		} else {
-			// create new comment
-			Comment.create(req.body.comment, function(err, comment) {
-				if(err) {
-					console.log(err);
-				} else {
-					// connect new comment to outdoor space
-					outdoorspace.comments.push(comment);
-					outdoorspace.save();
-					// redirect to outdoorspace show page
-					res.redirect("/outdoorspaces/" + outdoorspace._id);
-				}
-			});
-		}
-	});
-});
-
-// ============
-// Auth Routes
-// ============
-
-// Show register form
-app.get("/register", function(req, res) {
-	res.render("register");
-});
-
-// Handle Sign up logic
-app.post("/register", function(req, res) {
-	var newUser = new User({username: req.body.username});
-	User.register(newUser, req.body.password, function(err, user) {
-		if (err) {
-			console.log(err);
-			return res.render("register");
-		}
-		passport.authenticate("local")(req, res, function() {
-			res.redirect("/outdoorspaces");
-		});
-	});
-});
-
-// Show login form
-app.get("/login", function(req, res) {
-	res.render("login");
-});
-
-// Handle login logic
-app.post("/login", passport.authenticate("local", 
-	{
-    	successRedirect: "/outdoorspaces",
-    	failureRedirect: "/login",
-	}), function(req, res) {
-});
-
-// Logout route
-app.get("/logout", function(req, res) {
-	req.logout();
-	res.redirect("/outdoorspaces");
-});
-
-function isLoggedIn(req, res, next) {
-	if(req.isAuthenticated()) {
-		return next();
-	}
-	res.redirect("/login");
-}
 
 app.listen(3000, () => console.log('The Outdoorsy server has started!'));
