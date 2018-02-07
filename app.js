@@ -9,6 +9,7 @@ var express       = require("express"),
     User          = require("./models/user"),
     seedDB        = require("./seeds");
 
+// requiring routes
 var commentRoutes      = require("./routes/comments"),
     outdoorspaceRoutes = require("./routes/outdoorspaces"),
     indexRoutes        = require("./routes/index")
@@ -17,7 +18,7 @@ mongoose.connect("mongodb://localhost/outdoor_spaces");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-seedDB();
+// seedDB();   // seed the database
 
 // Passport Configuration
 app.use(require("express-session")({
